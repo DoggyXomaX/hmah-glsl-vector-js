@@ -1,0 +1,1 @@
+export const vec4 = (...args) => {};

@@ -1,0 +1,43 @@
+{
+  "private": false,
+  "name": "hmah-glsl-vector-js",
+  "description": "GLSL Vector implementation in JavaScript!",
+  "version": "1.0.0",
+  "keywords": [
+    "glsl",
+    "vector",
+    "array",
+    "rgba",
+    "xyzw",
+    "stpq"
+  ],
+  "homepage": "https://github.com/DoggyXomaX/hmah-glsl-vector-js",
+  "author": "doggyxomax (https://github.com/doggyxomax)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DoggyXomaX/hmah-glsl-vector-js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/doggyxomax/hmah-glsl-vector-js/issues"
+  },
+  "license": "MIT",
+  "files": [
+    "index.js",
+    "src/vec4.js"
+  ],
+  "main": "index.js",
+  "module": "index.js",
+  "type": "module",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "bun test"
+  },
+  "peerDependencies": {
+    "bun": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.0.0"
+  }
+}
