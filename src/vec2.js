@@ -8,16 +8,26 @@ const INDEX_DICT = {
 };
 
 class Vec2 {
-  #values;
+  values;
 
   constructor(values) {
-    this.#values = values;
+    this.values = values;
   }
+}
 
-  getPattern(pattern) {
-    if (pattern.length === 1) return this.#values[INDEX_DICT[pattern[0]]];
+(() => {
+  const dicts = [
+    ['', 'x', 'y'],
+    ['', 'r', 'g'],
+    ['', 's', 't'],
+  ];
+  const dictsCount = dicts.length;
+  const dictLength = dicts[0].length;
 
-    const values = this.#values;
+  const getPattern = (that, pattern) => {
+    if (pattern.length === 1) return that.values[INDEX_DICT[pattern[0]]];
+
+    const values = that.values;
     const patternLength = pattern.length;
     const obj = {};
 
@@ -29,10 +39,10 @@ class Vec2 {
     }
 
     return obj;
-  }
+  };
 
-  setPattern(pattern, value) {
-    const values = this.#values;
+  const setPattern = (that, pattern, value) => {
+    const values = that.values;
     const patternLength = pattern.length;
     switch (typeof value) {
       case 'number': {
@@ -82,24 +92,14 @@ class Vec2 {
     }
 
     throw Error(`Vec2 error: cannot set "${JSON.stringify(value, null, 2)}" to ${pattern}!`);
-  }
-}
-
-(() => {
-  const dicts = [
-    ['', 'x', 'y'],
-    ['', 'r', 'g'],
-    ['', 's', 't'],
-  ];
-  const dictsCount = dicts.length;
-  const dictLength = dicts[0].length;
+  };
 
   // Iterable 0..(SIZEOF - 1)
   for (let i = 0; i < SIZEOF; i++) {
     const key = 'xy'[i];
     Object.defineProperty(Vec2.prototype, i, {
-      get() { return this.getPattern(key) },
-      set(value) { this.setPattern(key, value) },
+      get() { return getPattern(this, key) },
+      set(value) { setPattern(this, key, value) },
     });
   }
   Vec2.prototype[Symbol.iterator] = function*() {
@@ -115,8 +115,8 @@ class Vec2 {
         if (key === '') continue;
         if (!(key in Vec2.prototype)) {
           Object.defineProperty(Vec2.prototype, key, {
-            get() { return this.getPattern(key) },
-            set(value) { this.setPattern(key, value) },
+            get() { return getPattern(this, key) },
+            set(value) { setPattern(this, key, value) },
           });
         }
       }
@@ -124,7 +124,7 @@ class Vec2 {
   }
 })();
 
-export const vec2 = (...args) => {
+const vec2 = (...args) => {
   const makeError = (message) => { throw Error(`vec2 error: ${message}`) };
 
   if (args.length > SIZEOF) {
@@ -180,3 +180,5 @@ export const vec2 = (...args) => {
 
   return new Vec2(values);
 };
+
+export { vec2 };
