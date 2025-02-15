@@ -1,4 +1,4 @@
-import { AnyRaw2, AnyRaw3, RawVec2, RawVec3 } from './raw';
+import { AnyRaw2, AnyRaw3, AnyRaw4, RawVec2, RawVec3 } from './raw';
 
 export class Vec3 {
   private constructor(values: Float32Array);
@@ -135,4 +135,4 @@ export class Vec3 {
   [Symbol.iterator](): Iterator<number>;
 }
 
-export function vec3(...args: (AnyRaw3 | AnyRaw2 | number)[]): Vec3;
+export function vec3(...args: (AnyRaw4 | AnyRaw3 | AnyRaw2 | number)[]): Vec3;
