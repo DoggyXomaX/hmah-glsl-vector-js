@@ -23,7 +23,9 @@
   "license": "MIT",
   "files": [
     "index.js",
-    "src/vec4.js"
+    "index.d.ts",
+    "src",
+    "tests"
   ],
   "main": "index.js",
   "module": "index.js",
