@@ -4,22 +4,18 @@ const INDEX_DICT = {
   r: 0, g: 1, b: 2, a: 3,
   s: 0, t: 1, p: 2, q: 3,
 };
-const XYZW_KEYS = ['x', 'y', 'z', 'w'];
-const RGBA_KEYS = ['r', 'g', 'b', 'a'];
-const STPQ_KEYS = ['s', 't', 'p', 'q'];
-const ARRAY_KEYS = [0, 1, 2, 3];
 
 class Vec4 {
-  values;
+  #values;
 
   constructor(values) {
-    this.values = values;
+    this.#values = values;
   }
 
   getPattern(pattern) {
-    if (pattern.length === 1) return this.values[INDEX_DICT[pattern[0]]]
+    if (pattern.length === 1) return this.#values[INDEX_DICT[pattern[0]]]
 
-    const values = this.values;
+    const values = this.#values;
     const patternLength = pattern.length;
     const obj = {};
 
@@ -34,7 +30,7 @@ class Vec4 {
   }
 
   setPattern(pattern, value) {
-    const values = this.values;
+    const values = this.#values;
     const patternLength = pattern.length;
     switch (typeof value) {
       case 'number': {
@@ -74,10 +70,10 @@ class Vec4 {
             return true;
           };
 
-          if (applyKeys(XYZW_KEYS)) break;
-          if (applyKeys(ARRAY_KEYS)) break;
-          if (applyKeys(RGBA_KEYS)) break;
-          if (applyKeys(STPQ_KEYS)) break;
+          if (applyKeys('xyzw')) break;
+          if (applyKeys('0123')) break;
+          if (applyKeys('rgba')) break;
+          if (applyKeys('stpq')) break;
         }
       }
 
@@ -88,17 +84,17 @@ class Vec4 {
 
 (() => {
   const dicts = [
-    ['', ...XYZW_KEYS],
-    ['', ...RGBA_KEYS],
-    ['', ...STPQ_KEYS],
+    ['', 'x', 'y', 'z', 'w'],
+    ['', 'r', 'g', 'b', 'a'],
+    ['', 's', 't', 'p', 'q'],
   ];
   const dictsCount = dicts.length;
 
   // Iterable 0..3
   for (let i = 0; i < 4; i++) {
     Object.defineProperty(Vec4.prototype, i, {
-      get() { return this.getPattern(XYZW_KEYS[i]) },
-      set(value) { this.setPattern(XYZW_KEYS[i], value) },
+      get() { return this.getPattern('xyzw'[i]) },
+      set(value) { this.setPattern('xyzw'[i], value) },
     });
   }
 
@@ -153,10 +149,10 @@ const vec4 = (...args) => {
       }
       case 'object': {
         if (arg !== null) {
-          if (applyKeys(XYZW_KEYS, arg)) continue;
-          if (applyKeys(ARRAY_KEYS, arg)) continue;
-          if (applyKeys(RGBA_KEYS, arg)) continue;
-          if (applyKeys(STPQ_KEYS, arg)) continue;
+          if (applyKeys('xyzw', arg)) continue;
+          if (applyKeys('0123', arg)) continue;
+          if (applyKeys('rgba', arg)) continue;
+          if (applyKeys('stpq', arg)) continue;
         }
         break;
       }
