@@ -2,7 +2,7 @@
   "private": false,
   "name": "hmah-glsl-vector-js",
   "description": "GLSL Vector implementation in JavaScript!",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "keywords": [
     "glsl",
     "vector",
