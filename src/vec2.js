@@ -114,6 +114,10 @@ class Vec2 {
       }
     }
   }
+
+  Vec2.prototype[Symbol.iterator] = function*() {
+    for (let i = 0; i < 2; i++) yield this[i];
+  };
 })();
 
 const vec2 = (...args) => {

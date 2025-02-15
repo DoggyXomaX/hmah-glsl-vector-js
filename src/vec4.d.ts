@@ -1039,6 +1039,7 @@ export class Vec4 {
   public 1: number;
   public 2: number;
   public 3: number;
+  [Symbol.iterator](): Iterator<number>;
 }
 
 export function vec4(...args: (AnyRaw4 | AnyRaw3 | AnyRaw2 | number)[]): Vec4;

@@ -132,6 +132,7 @@ export class Vec3 {
   public 0: number;
   public 1: number;
   public 2: number;
+  [Symbol.iterator](): Iterator<number>;
 }
 
 export function vec3(...args: (AnyRaw3 | AnyRaw2 | number)[]): Vec3;

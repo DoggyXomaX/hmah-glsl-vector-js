@@ -116,6 +116,10 @@ class Vec3 {
       }
     }
   }
+
+  Vec3.prototype[Symbol.iterator] = function*() {
+    for (let i = 0; i < 3; i++) yield this[i];
+  };
 })();
 
 const vec3 = (...args) => {

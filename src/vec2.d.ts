@@ -29,6 +29,7 @@ export class Vec2 {
 
   public 0: number;
   public 1: number;
+  [Symbol.iterator](): Iterator<number>;
 }
 
 export function vec2(...args: (AnyRaw2 | number)[]): Vec2;
