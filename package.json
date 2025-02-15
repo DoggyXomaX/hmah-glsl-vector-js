@@ -27,6 +27,7 @@
   ],
   "main": "index.js",
   "module": "index.js",
+  "types": "index.d.ts",
   "type": "module",
   "directories": {
     "test": "tests"
