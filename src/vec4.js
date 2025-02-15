@@ -1,3 +1,5 @@
+const SIZEOF = 4;
+
 const INDEX_DICT = {
   0: 'x', 1: 'y', 2: 'z', 3: 'w',
   x: 0, y: 1, z: 2, w: 3,
@@ -13,7 +15,7 @@ class Vec4 {
   }
 
   getPattern(pattern) {
-    if (pattern.length === 1) return this.#values[INDEX_DICT[pattern[0]]]
+    if (pattern.length === 1) return this.#values[INDEX_DICT[pattern[0]]];
 
     const values = this.#values;
     const patternLength = pattern.length;
@@ -39,14 +41,14 @@ class Vec4 {
           const valueIndex = INDEX_DICT[patternKey];
           values[valueIndex] = value;
         }
-        break;
+        return;
       }
 
       case 'object': {
         if (value !== null) {
           const applyKeys = (keys) => {
             const objValues = [];
-            for (let i = 0; i < 4; i++) {
+            for (let i = 0; i < SIZEOF; i++) {
               const key = keys[i];
               const newValue = value[key];
               if (typeof newValue !== 'number') {
@@ -70,15 +72,16 @@ class Vec4 {
             return true;
           };
 
-          if (applyKeys('xyzw')) break;
-          if (applyKeys('0123')) break;
-          if (applyKeys('rgba')) break;
-          if (applyKeys('stpq')) break;
+          if (applyKeys('xyzw')) return;
+          if (applyKeys('0123')) return;
+          if (applyKeys('rgba')) return;
+          if (applyKeys('stpq')) return;
         }
+        break;
       }
-
-      default: throw Error(`Vec4 error: cannot set "${JSON.stringify(value, null, 2)}" to ${pattern}!`);
     }
+
+    throw Error(`Vec4 error: cannot set "${JSON.stringify(value, null, 2)}" to ${pattern}!`);
   }
 }
 
@@ -89,22 +92,27 @@ class Vec4 {
     ['', 's', 't', 'p', 'q'],
   ];
   const dictsCount = dicts.length;
+  const dictLength = dicts[0].length;
 
-  // Iterable 0..3
-  for (let i = 0; i < 4; i++) {
+  // Iterable 0..(SIZEOF - 1)
+  for (let i = 0; i < SIZEOF; i++) {
+    const key = 'xyzw'[i];
     Object.defineProperty(Vec4.prototype, i, {
-      get() { return this.getPattern('xyzw'[i]) },
-      set(value) { this.setPattern('xyzw'[i], value) },
+      get() { return this.getPattern(key) },
+      set(value) { this.setPattern(key, value) },
     });
   }
+  Vec4.prototype[Symbol.iterator] = function*() {
+    for (let i = 0; i < SIZEOF; i++) yield this[i];
+  };
 
   // Other get/set x, stq, arbr, etc...
   for (let d = 0; d < dictsCount; d++) {
     const dict = dicts[d];
-    for (let w = 0; w < 5; w++) {
-      for (let z = 0; z < 5; z++) {
-        for (let y = 0; y < 5; y++) {
-          for (let x = 0; x < 5; x++) {
+    for (let w = 0; w < dictLength; w++) {
+      for (let z = 0; z < dictLength; z++) {
+        for (let y = 0; y < dictLength; y++) {
+          for (let x = 0; x < dictLength; x++) {
             const key = [dict[x], dict[y], dict[z], dict[w]].join('');
             if (key === '') continue;
             if (!(key in Vec4.prototype)) {
@@ -118,26 +126,31 @@ class Vec4 {
       }
     }
   }
-
-  Vec4.prototype[Symbol.iterator] = function*() {
-    for (let i = 0; i < 4; i++) yield this[i];
-  };
 })();
 
-const vec4 = (...args) => {
-  if (args.length > 4) {
-    throw Error(`vec4 error: max args count is 4, but ${args.length} args provided!`);
+export const vec4 = (...args) => {
+  const makeError = (message) => { throw Error(`vec4 error: ${message}`) };
+
+  if (args.length > SIZEOF) {
+    makeError(`max args count is ${SIZEOF}, but ${args.length} args provided!`);
   }
 
-  const values = new Float32Array(4);
+  const values = new Float32Array(SIZEOF);
+  if (args.length === 0) {
+    return new Vec4(values.fill(0, 0, SIZEOF));
+  }
+  if (args.length === 1 && typeof args[0] === 'number') {
+    return new Vec4(values.fill(args[0], 0, SIZEOF));
+  }
+
   let valuesCount = 0;
 
   const applyKeys = (keys, obj) => {
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < SIZEOF; i++) {
       const value = obj[keys[i]];
       if (typeof value === 'number') {
         values[valuesCount++] = value;
-        if (valuesCount === 4) return true;
+        if (valuesCount === SIZEOF) return true;
       } else {
         return i !== 0;
       }
@@ -145,7 +158,7 @@ const vec4 = (...args) => {
   };
 
   const argsCount = args.length;
-  for (let i = 0; i < argsCount && valuesCount !== 4; i++) {
+  for (let i = 0; i < argsCount && valuesCount !== SIZEOF; i++) {
     const arg = args[i];
     switch (typeof arg) {
       case 'number': {
@@ -162,12 +175,12 @@ const vec4 = (...args) => {
       }
     }
 
-    throw Error(`vec4 error: invalid arguments[${i}] = ${JSON.stringify(arg, null, 2)}`);
+    makeError(`invalid arguments[${i}] = ${JSON.stringify(arg, null, 2)}`)
   }
 
-  if (valuesCount !== 4) throw Error(`vec4 error: 4 values required, but ${valuesCount} provided!`);
+  if (valuesCount !== SIZEOF) {
+    makeError(`${SIZEOF} values required, but ${valuesCount} provided!`);
+  }
 
   return new Vec4(values);
 };
-
-export { vec4 };

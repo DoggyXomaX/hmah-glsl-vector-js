@@ -24,4 +24,10 @@ describe('vec2 test', () => {
     expect(gg.x).toBe(1);
     expect(gg.y).toBe(1);
   });
+
+  test('fill test', () => {
+    const value = 3;
+    const v = vec2(value);
+    for (let i = 0; i < 2; i++) expect(v[i]).toBe(value);
+  });
 });

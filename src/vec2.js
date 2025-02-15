@@ -1,3 +1,5 @@
+const SIZEOF = 2;
+
 const INDEX_DICT = {
   0: 'x', 1: 'y',
   x: 0, y: 1,
@@ -13,7 +15,7 @@ class Vec2 {
   }
 
   getPattern(pattern) {
-    if (pattern.length === 1) return this.#values[INDEX_DICT[pattern[0]]]
+    if (pattern.length === 1) return this.#values[INDEX_DICT[pattern[0]]];
 
     const values = this.#values;
     const patternLength = pattern.length;
@@ -39,14 +41,14 @@ class Vec2 {
           const valueIndex = INDEX_DICT[patternKey];
           values[valueIndex] = value;
         }
-        break;
+        return;
       }
 
       case 'object': {
         if (value !== null) {
           const applyKeys = (keys) => {
             const objValues = [];
-            for (let i = 0; i < 2; i++) {
+            for (let i = 0; i < SIZEOF; i++) {
               const key = keys[i];
               const newValue = value[key];
               if (typeof newValue !== 'number') {
@@ -70,15 +72,16 @@ class Vec2 {
             return true;
           };
 
-          if (applyKeys('xy')) break;
-          if (applyKeys('01')) break;
-          if (applyKeys('rg')) break;
-          if (applyKeys('st')) break;
+          if (applyKeys('xy')) return;
+          if (applyKeys('01')) return;
+          if (applyKeys('rg')) return;
+          if (applyKeys('st')) return;
         }
+        break;
       }
-
-      default: throw Error(`Vec2 error: cannot set "${JSON.stringify(value, null, 2)}" to ${pattern}!`);
     }
+
+    throw Error(`Vec2 error: cannot set "${JSON.stringify(value, null, 2)}" to ${pattern}!`);
   }
 }
 
@@ -89,20 +92,25 @@ class Vec2 {
     ['', 's', 't'],
   ];
   const dictsCount = dicts.length;
+  const dictLength = dicts[0].length;
 
-  // Iterable 0..2
-  for (let i = 0; i < 2; i++) {
+  // Iterable 0..(SIZEOF - 1)
+  for (let i = 0; i < SIZEOF; i++) {
+    const key = 'xy'[i];
     Object.defineProperty(Vec2.prototype, i, {
-      get() { return this.getPattern('xy'[i]) },
-      set(value) { this.setPattern('xy'[i], value) },
+      get() { return this.getPattern(key) },
+      set(value) { this.setPattern(key, value) },
     });
   }
+  Vec2.prototype[Symbol.iterator] = function*() {
+    for (let i = 0; i < SIZEOF; i++) yield this[i];
+  };
 
   // Other get/set x, stq, arbr, etc...
   for (let d = 0; d < dictsCount; d++) {
     const dict = dicts[d];
-    for (let y = 0; y < 3; y++) {
-      for (let x = 0; x < 3; x++) {
+    for (let y = 0; y < dictLength; y++) {
+      for (let x = 0; x < dictLength; x++) {
         const key = [dict[x], dict[y]].join('');
         if (key === '') continue;
         if (!(key in Vec2.prototype)) {
@@ -114,26 +122,31 @@ class Vec2 {
       }
     }
   }
-
-  Vec2.prototype[Symbol.iterator] = function*() {
-    for (let i = 0; i < 2; i++) yield this[i];
-  };
 })();
 
-const vec2 = (...args) => {
-  if (args.length > 2) {
-    throw Error(`vec2 error: max args count is 2, but ${args.length} args provided!`);
+export const vec2 = (...args) => {
+  const makeError = (message) => { throw Error(`vec2 error: ${message}`) };
+
+  if (args.length > SIZEOF) {
+    makeError(`max args count is ${SIZEOF}, but ${args.length} args provided!`);
   }
 
-  const values = new Float32Array(2);
+  const values = new Float32Array(SIZEOF);
+  if (args.length === 0) {
+    return new Vec2(values.fill(0, 0, SIZEOF));
+  }
+  if (args.length === 1 && typeof args[0] === 'number') {
+    return new Vec2(values.fill(args[0], 0, SIZEOF));
+  }
+
   let valuesCount = 0;
 
   const applyKeys = (keys, obj) => {
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < SIZEOF; i++) {
       const value = obj[keys[i]];
       if (typeof value === 'number') {
         values[valuesCount++] = value;
-        if (valuesCount === 2) return true;
+        if (valuesCount === SIZEOF) return true;
       } else {
         return i !== 0;
       }
@@ -141,7 +154,7 @@ const vec2 = (...args) => {
   };
 
   const argsCount = args.length;
-  for (let i = 0; i < argsCount && valuesCount !== 2; i++) {
+  for (let i = 0; i < argsCount && valuesCount !== SIZEOF; i++) {
     const arg = args[i];
     switch (typeof arg) {
       case 'number': {
@@ -158,12 +171,12 @@ const vec2 = (...args) => {
       }
     }
 
-    throw Error(`vec2 error: invalid arguments[${i}] = ${JSON.stringify(arg, null, 2)}`);
+    makeError(`invalid arguments[${i}] = ${JSON.stringify(arg, null, 2)}`)
   }
 
-  if (valuesCount !== 2) throw Error(`vec2 error: 2 values required, but ${valuesCount} provided!`);
+  if (valuesCount !== SIZEOF) {
+    makeError(`${SIZEOF} values required, but ${valuesCount} provided!`);
+  }
 
   return new Vec2(values);
 };
-
-export { vec2 };

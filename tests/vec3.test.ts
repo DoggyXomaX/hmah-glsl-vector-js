@@ -33,4 +33,10 @@ describe('vec3 test', () => {
     expect(ppp.y).toBe(2);
     expect(ppp.z).toBe(2);
   });
+
+  test('fill test', () => {
+    const value = 3;
+    const v = vec3(value);
+    for (let i = 0; i < 3; i++) expect(v[i]).toBe(value);
+  });
 });

@@ -44,4 +44,10 @@ describe('vec4 test', () => {
     expect(wwww.z).toBe(3);
     expect(wwww.w).toBe(3);
   });
+
+  test('fill test', () => {
+    const value = 3;
+    const v = vec4(value);
+    for (let i = 0; i < 4; i++) expect(v[i]).toBe(value);
+  });
 });
