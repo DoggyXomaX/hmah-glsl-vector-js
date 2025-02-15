@@ -4,6 +4,9 @@ node_modules
 # Node.JS
 package-lock.json
 
+# Bun
+bun.lockb
+
 # IDE
 .vscode
 .idea
