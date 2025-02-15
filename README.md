@@ -1,5 +1,11 @@
 # GLSL Vector implementation in JavaScript!
 
+[
+![](https://img.shields.io/badge/hmah--glsl--vector--js-npm-red)
+](
+https://www.npmjs.com/package/hmah-glsl-vector-js
+)
+
 ## Usage
 ```ts
 import { vec4, vec3, vec2 } from 'hmah-glsl-vector-js';
