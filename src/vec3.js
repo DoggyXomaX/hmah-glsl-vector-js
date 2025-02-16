@@ -13,6 +13,69 @@ class Vec3 {
   constructor(values) {
     this.values = values;
   }
+
+  #operate(callbackName, callback, ...args) {
+    const makeError = (message) => {
+      throw Error(`Vec3.${callbackName} error: ${message}`);
+    };
+
+    if (args.length !== SIZEOF && args.length !== 1) {
+      makeError(`argument count should be ${SIZEOF} or 1!`);
+    }
+
+    if (args.length === SIZEOF) {
+      for (let i = 0; i < SIZEOF; i++) {
+        if (typeof args[i] !== 'number') {
+          makeError(`cannot operate with "${JSON.stringify(args, null, 2)}" with ${SIZEOF} arguments count!`);
+        }
+      }
+      for (let i = 0; i < SIZEOF; i++) {
+        callback(args[i], i);
+      }
+      return this;
+    }
+
+    const o = args[0];
+
+    if (typeof o === 'number') {
+      for (let i = 0; i < SIZEOF; i++) {
+        callback(o, i);
+      }
+      return this;
+    }
+
+    if (typeof o !== 'object' || o === null) {
+      makeError(`single argument should be a vector object!`);
+    }
+
+    const applyKeys = (keys) => {
+      for (let i = 0; i < SIZEOF; i++) {
+        const key = keys[i];
+        const value = o[key];
+        if (typeof value === 'number') {
+          callback(value, i);
+        } else {
+          return i !== 0;
+        }
+      }
+      return true;
+    };
+
+    if (applyKeys('xyz')) return this;
+    if (applyKeys('012')) return this;
+    if (applyKeys('rgb')) return this;
+    if (applyKeys('stp')) return this;
+
+    makeError(`cannot operate with "${JSON.stringify(args, null, 2)}"`);
+  }
+
+  add = (...args) => this.#operate('add', (value, i) => (this.values[i] += value), ...args);
+  sub = (...args) => this.#operate('add', (value, i) => (this.values[i] -= value), ...args);
+  mul = (...args) => this.#operate('mul', (value, i) => (this.values[i] *= value), ...args);
+  div = (...args) => this.#operate('div', (value, i) => (this.values[i] /= value), ...args);
+  mod = (...args) => this.#operate('mod', (value, i) => (this.values[i] %= value), ...args);
+
+  clone = () => new Vec3(new Float32Array(this));
 }
 
 (() => {

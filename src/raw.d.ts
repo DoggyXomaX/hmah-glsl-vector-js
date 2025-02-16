@@ -7,10 +7,7 @@ export type RawRg = { r: number; g: number };
 export type RawStpq = { s: number; t: number; p: number; q: number };
 export type RawStp = { s: number; t: number; p: number };
 export type RawSt = { s: number; t: number };
-export type Raw0123 = [number, number, number, number];
-export type Raw012 = [number, number, number];
-export type Raw01 = [number, number];
 
-export type AnyRaw4 = RawVec4 | RawRgba | RawStpq | Raw0123;
-export type AnyRaw3 = RawVec3 | RawRgb | RawStp | Raw012;
-export type AnyRaw2 = RawVec2 | RawRg | RawSt | Raw01;
+export type AnyRaw4 = RawVec4 | RawRgba | RawStpq;
+export type AnyRaw3 = RawVec3 | RawRgb | RawStp;
+export type AnyRaw2 = RawVec2 | RawRg | RawSt;

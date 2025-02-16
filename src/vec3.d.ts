@@ -3,6 +3,14 @@ import { AnyRaw2, AnyRaw3, AnyRaw4, RawVec2, RawVec3 } from './raw';
 export class Vec3 {
   private constructor(values: Float32Array);
 
+  public add(...args: (AnyRaw4 | AnyRaw3 | AnyRaw2 | number[] | number)[]): Vec3;
+  public sub(...args: (AnyRaw4 | AnyRaw3 | AnyRaw2 | number[] | number)[]): Vec3;
+  public mul(...args: (AnyRaw4 | AnyRaw3 | AnyRaw2 | number[] | number)[]): Vec3;
+  public div(...args: (AnyRaw4 | AnyRaw3 | AnyRaw2 | number[] | number)[]): Vec3;
+  public mod(...args: (AnyRaw4 | AnyRaw3 | AnyRaw2 | number[] | number)[]): Vec3;
+
+  public clone(): Vec3;
+
   public xxx: RawVec3;
   public xxy: RawVec3;
   public xxz: RawVec3;
@@ -135,4 +143,4 @@ export class Vec3 {
   [Symbol.iterator](): Iterator<number>;
 }
 
-export function vec3(...args: (AnyRaw4 | AnyRaw3 | AnyRaw2 | number)[]): Vec3;
+export function vec3(...args: (AnyRaw4 | AnyRaw3 | AnyRaw2 | number[] | number)[]): Vec3;

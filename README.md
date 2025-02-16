@@ -21,11 +21,18 @@ const colorRGBA = vec3({ r: 1, g: 0, b: 0, a: 1 });
 const outputColor = vec4(colorRGBA.bgr, 1);
 
 const textureCoord = vec2({ s: 0, t: 0 });
+
+const a = vec4(1, 2, 3, 4);
+const b = vec4(4, 5, 6, 7);
+const c = a.clone().add(b); // new Vec4 with 5, 7, 9, 11 values
+const d = a.add(b); // pointer to the modified a with 5, 7, 9, 11 values
 ```
 
 ## TODO
 * [x] Initialization
-* [ ] Add/Sub/Mul/Div/Mod
+* [x] Clone
+* [x] Add/Sub/Mul/Div/Mod
+* [ ] Equals
 * [ ] Cross/Dot ?
 * [ ] Complex tests
 

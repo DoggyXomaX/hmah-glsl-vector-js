@@ -3,6 +3,14 @@ import { RawVec4, RawVec3, RawVec2, AnyRaw4, AnyRaw3, AnyRaw2 } from './raw';
 export class Vec4 {
   private constructor(values: Float32Array);
 
+  public add(...args: (AnyRaw4 | AnyRaw3 | AnyRaw2 | number[] | number)[]): Vec4;
+  public sub(...args: (AnyRaw4 | AnyRaw3 | AnyRaw2 | number[] | number)[]): Vec4;
+  public mul(...args: (AnyRaw4 | AnyRaw3 | AnyRaw2 | number[] | number)[]): Vec4;
+  public div(...args: (AnyRaw4 | AnyRaw3 | AnyRaw2 | number[] | number)[]): Vec4;
+  public mod(...args: (AnyRaw4 | AnyRaw3 | AnyRaw2 | number[] | number)[]): Vec4;
+
+  public clone(): Vec4;
+
   public xxxx: RawVec4;
   public xxxy: RawVec4;
   public xxxz: RawVec4;
@@ -1042,4 +1050,4 @@ export class Vec4 {
   [Symbol.iterator](): Iterator<number>;
 }
 
-export function vec4(...args: (AnyRaw4 | AnyRaw3 | AnyRaw2 | number)[]): Vec4;
+export function vec4(...args: (AnyRaw4 | AnyRaw3 | AnyRaw2 | number[] | number)[]): Vec4;
